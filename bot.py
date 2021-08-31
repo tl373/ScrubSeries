@@ -41,7 +41,7 @@ async def random_map(ctx,*arg):
     response = random.choice(valorant_maps)
     await ctx.send(ctx.author.mention + " got: " + str(response).title() + "!")
     await ctx.send(file=discord.File(response + '.png'))
-
+"""
 @bot.command(name='score', help='Enter your score using !score <winning team> <score> (for example score will be 13-11 put in 13-11)')
 async def set_score(ctx,*args):
     team_names = [
@@ -53,7 +53,7 @@ async def set_score(ctx,*args):
     for team in team_names:
         if args[0] == team:
 
-
+"""
 
 
 """@bot.command(name='showTeam', help='shows what team you are on')
