@@ -59,7 +59,13 @@ def count_columns():#add to column if the value is not None
 
     return counter
 
+# def return_combined_total_weights(All_Players):
 #
+#     combined_total_weights = 0
+# for i in
+#     length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
+
+
 def create_teams(All_Players):
 
     new_team = Val_Team()
@@ -138,8 +144,6 @@ All_Players = {
     #'Radiant': [300]
 }
 
-All_Teams = {}
-
 
 for i in range(1, len(data)):
 
@@ -159,9 +163,19 @@ for i in range(1, len(data)):
         All_Players[Rank_Name].append(Player_Info)
 
 total_possible_teams = math.floor(count_columns()/5)
+All_Team_Numbers = []
+All_Teams = {}
+total_team_members = 0
 
 for i in range(total_possible_teams):
+    All_Team_Numbers.append(i+1)
+    #All_Teams[i + 1] = create_teams(All_Players)
+    #pprint(All_Teams[i+1].team_members)
 
-    All_Teams[i + 1] = create_teams(All_Players)
-    pprint(All_Teams[i+1].team_members[0])
+
+All_Teams = dict.fromkeys(All_Team_Numbers)
+
+total_team_members += len(All_Teams[i + 1].team_members)
+#pprint(return_combined_total_weights(All_Players))
+#pprint(len(All_Teams.keys()))
 

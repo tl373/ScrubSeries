@@ -19,7 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0fd902b-8f30-494f-82de-ff0b8ddec972" name="Default Changelist" comment="Rank distribution into dictionary" />
+    <list default="true" id="f0fd902b-8f30-494f-82de-ff0b8ddec972" name="Default Changelist" comment="Updated create_teams">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SSGoogleData.py" beforeDir="false" afterPath="$PROJECT_DIR$/SSGoogleData.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -198,7 +201,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632424980475</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Updated create_teams">
+      <created>1632424995755</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1632424995755</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -217,6 +227,7 @@
     <MESSAGE value="suck jimmys left nut" />
     <MESSAGE value="data from google api" />
     <MESSAGE value="Rank distribution into dictionary" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rank distribution into dictionary" />
+    <MESSAGE value="Updated create_teams" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated create_teams" />
   </component>
 </project>
