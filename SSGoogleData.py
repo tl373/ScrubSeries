@@ -12,8 +12,18 @@ class Val_Player:
         self.Current_Rank = Current_Rank
 
 class Val_Team:
-    def __init__(self, team_members):
+    def __init__(self):
         self.team_members = []
+
+    def add_member(self, team_member):
+        self.team_members.append(team_member)
+
+    def update_member(self, arg, index):
+        self.team_members[index] = arg
+
+    def __len__(self):
+        return len(self.team_members)
+
 
 def count_values(Dict_Values):
     values = 0
@@ -36,22 +46,57 @@ def count_values(Dict_Values):
     return values
 
 
-def balance_team(All_Players,empty_dictcount):
-    pprint(All_Players)
-    random_rank = random.choice(list(All_Players))  # gets one of the ranks from Iron-Radiant
-    pprint(random_rank + " is the random rank")
-    random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
-    pprint("random ranked tier is " + str(random_rankedtier))
-    random_playerindex = random.randint(1, len(All_Players[random_rank][
-                                                   random_rankedtier]) - 1)  # helps pick a player from the tiers that is not the numerical value
-    pprint("index is " + str(random_playerindex))
-    random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
-    pprint(random_rankedplayer.Player_IGN)
+def create_teams(All_Players,empty_dictcount):
 
     remove_playercount = count_values(All_Players)
-    while remove_playercount > empty_dictcount:
-        random_rank = random.choice(list(All_Players)) #selects from rank Iron-Radiant
-        random_rankedplayer = random.choice(dict(All_Players[random_rank]))
+    total_rankweight = 0
+    # try:
+    while empty_dictcount <= remove_playercount:
+        random_rank = random.choice(list(All_Players))  # gets one of the ranks from Iron-Radiant
+        if random_rank == 'Radiant':
+            pprint("you got radiant slut" + str(random_rank))
+            length_of_rankedlist = len(All_Players[random_rank])
+        else:
+            random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
+            length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
+
+            while length_of_rankedlist <= 1:
+                if random_rank == 'Radiant':
+                    length_of_rankedlist = len(All_Players[random_rank])
+                    pprint("you got radiant twice slut" + str(random_rank))
+                    break
+                else:
+                    random_rank = random.choice(list(All_Players))
+                    #pprint(random_rank)
+                    random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
+                    #pprint(random_rankedtier)
+                    length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
+
+        random_playerindex = random.randint(1, (length_of_rankedlist - 1))  # helps pick a player from the tiers that is not the numerical value
+        #pprint(random_playerindex)
+        #pprint(random_rank)
+        random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
+        total_rankweight += All_Players[random_rank][random_rankedtier][0] #get the numerical value of the rank weight given statically
+        new_team.add_member(total_rankweight)
+        new_team.add_member(random_rankedplayer.Player_IGN)
+        All_Players[random_rank][random_rankedtier].remove(random_playerindex)
+        remove_playercount = count_values(All_Players)
+        #pprint(new_team.__len__())
+
+        #pprint(All_Teams)
+
+    #return All_Teams
+    # except AttributeError as e:
+    #     if e.message("'list' object has no attribute 'keys'"):
+    #         if
+    #         else:
+    #         return
+
+
+#     if e.message("'list' object has no attribute 'keys'"):
+#         print("HA")
+#     else:
+#         print("bah")
 
 
 # try:
@@ -81,13 +126,11 @@ All_Players = {
     'Gold': {'1': [100], '2': [110], '3': [120]},
     'Platinum': {'1': [140], '2': [150], '3': [160]},
     'Diamond': {'1': [180], '2': [200], '3': [220]},
-    'Immortal': {'1': [240], '2': [260], '3': [280]},
-    'Radiant': [300]
+    'Immortal': {'1': [240], '2': [260], '3': [280]}
+    #'Radiant': [300]
 }
 
-All_Teams = {
-    'Teams': {'1':[]}
-}
+All_Teams = {}
 
 empty_dictcount = count_values(All_Players) #when the dictionary All_players has no players in it
 
@@ -108,18 +151,14 @@ for i in range(1, len(data)):
     elif Rank_Name != '':
         All_Players[Rank_Name].append(Player_Info)
 
-#pprint(balance_team(All_Players,empty_dictcount))
-#
-# pprint(All_Players)
-# random_rank = random.choice(list(All_Players))#gets one of the ranks from Iron-Radiant
-# pprint(random_rank + " is the random rank")
-# random_rankedtier = random.choice(list(All_Players[random_rank])) #gets random tier from 1-3
-# pprint("random ranked tier is " + str(random_rankedtier))
-# random_playerindex = random.randint(1,len(All_Players[random_rank][random_rankedtier])-1) #helps pick a player from the tiers that is not the numerical value
-# pprint("index is " + str(random_playerindex))
-# random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
-# pprint(random_rankedplayer.Player_IGN)
-# pprint(random_rankedplayer.Player_IGN + " index is " + str(random_playerindex)
-#        + " random rank is " + random_rank + " random ranked tier is " + str(random_rankedtier) + " length of list is " + str(len(All_Players[random_rank][random_rankedtier])-1))
-#
+new_team = Val_Team()
+team_number = 1
+while new_team.__len__() >= 6:
+    #All_Teams.setdefault(new_team)
+    All_Teams[team_number] = new_team
+    pprint(All_Teams)
+    #print(team_number)
+    team_number += 1 #add a new team
 
+
+pprint(create_teams(All_Players,empty_dictcount))
