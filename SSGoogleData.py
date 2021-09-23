@@ -1,5 +1,5 @@
 #  pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib to get google api pip install
-import gspread, random
+import gspread, random, math
 from oauth2client.service_account import ServiceAccountCredentials
 from pprint import pprint
 from collections import defaultdict
@@ -11,6 +11,7 @@ class Val_Player:
         self.Player_IGN = Player_IGN
         self.Current_Rank = Current_Rank
 
+
 class Val_Team:
     def __init__(self):
         self.team_members = []
@@ -20,6 +21,9 @@ class Val_Team:
 
     def update_member(self, arg, index):
         self.team_members[index] = arg
+
+    def clear_team(self):
+        self.team_members.clear()
 
     def __len__(self):
         return len(self.team_members)
@@ -46,16 +50,28 @@ def count_values(Dict_Values):
     return values
 
 
-def create_teams(All_Players,empty_dictcount):
+def count_columns():#add to column if the value is not None
+    counter = 0
 
-    remove_playercount = count_values(All_Players)
+    for player in range(len(sheet.col_values(2))):
+        if data[player][2] is not '':
+            counter += 1
+
+    return counter
+
+
+def create_teams(All_Players):
+
+    new_team = Val_Team()
     total_rankweight = 0
+    new_team.add_member(total_rankweight)
     # try:
-    while empty_dictcount <= remove_playercount:
+    while new_team.__len__() < 6:
         random_rank = random.choice(list(All_Players))  # gets one of the ranks from Iron-Radiant
         if random_rank == 'Radiant':
             pprint("you got radiant slut" + str(random_rank))
             length_of_rankedlist = len(All_Players[random_rank])
+
         else:
             random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
             length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
@@ -67,25 +83,17 @@ def create_teams(All_Players,empty_dictcount):
                     break
                 else:
                     random_rank = random.choice(list(All_Players))
-                    #pprint(random_rank)
                     random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
-                    #pprint(random_rankedtier)
                     length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
 
-        random_playerindex = random.randint(1, (length_of_rankedlist - 1))  # helps pick a player from the tiers that is not the numerical value
-        #pprint(random_playerindex)
-        #pprint(random_rank)
-        random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
-        total_rankweight += All_Players[random_rank][random_rankedtier][0] #get the numerical value of the rank weight given statically
-        new_team.add_member(total_rankweight)
-        new_team.add_member(random_rankedplayer.Player_IGN)
-        All_Players[random_rank][random_rankedtier].remove(random_playerindex)
-        remove_playercount = count_values(All_Players)
-        #pprint(new_team.__len__())
+            random_playerindex = random.randint(1, (length_of_rankedlist - 1))  # helps pick a player from the tiers that is not the numerical value
+            random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
+            total_rankweight += All_Players[random_rank][random_rankedtier][0] #get the numerical value of the rank weight given statically
+            new_team.update_member(total_rankweight,0)#update first item in new_team which is the rank weight
+            new_team.add_member(random_rankedplayer.Player_IGN)
+            All_Players[random_rank][random_rankedtier].remove(random_rankedplayer)#removes a person
 
-        #pprint(All_Teams)
-
-    #return All_Teams
+    return new_team
     # except AttributeError as e:
     #     if e.message("'list' object has no attribute 'keys'"):
     #         if
@@ -132,7 +140,6 @@ All_Players = {
 
 All_Teams = {}
 
-empty_dictcount = count_values(All_Players) #when the dictionary All_players has no players in it
 
 for i in range(1, len(data)):
 
@@ -151,14 +158,10 @@ for i in range(1, len(data)):
     elif Rank_Name != '':
         All_Players[Rank_Name].append(Player_Info)
 
-new_team = Val_Team()
-team_number = 1
-while new_team.__len__() >= 6:
-    #All_Teams.setdefault(new_team)
-    All_Teams[team_number] = new_team
-    pprint(All_Teams)
-    #print(team_number)
-    team_number += 1 #add a new team
+total_possible_teams = math.floor(count_columns()/5)
 
+for i in range(total_possible_teams):
 
-pprint(create_teams(All_Players,empty_dictcount))
+    All_Teams[i + 1] = create_teams(All_Players)
+    pprint(All_Teams[i+1].team_members[0])
+
