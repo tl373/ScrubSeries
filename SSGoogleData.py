@@ -59,7 +59,7 @@ def count_columns():#add to column if the value is not None
 
     return counter
 
-
+#
 def create_teams(All_Players):
 
     new_team = Val_Team()
