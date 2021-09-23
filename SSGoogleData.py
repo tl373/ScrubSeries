@@ -25,7 +25,7 @@ Player_Ranks = {
     'Immortal': [],
     'Radiant': []
 }
-
+#
 
 for i in range(1, len(data)):
 
