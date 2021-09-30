@@ -2,7 +2,6 @@
 import gspread, random, math
 from oauth2client.service_account import ServiceAccountCredentials
 from pprint import pprint
-from collections import defaultdict
 
 
 class Val_Player:
@@ -19,8 +18,8 @@ class Val_Team:
     def add_member(self, team_member):
         self.team_members.append(team_member)
 
-    def update_member(self, arg, index):
-        self.team_members[index] = arg
+    def add_weight(self, arg):
+        self.team_members[0] += arg
 
     def clear_team(self):
         self.team_members.clear()
@@ -29,28 +28,7 @@ class Val_Team:
         return len(self.team_members)
 
 
-def count_values(Dict_Values):
-    values = 0
-    if type(Dict_Values) == dict:
-        for keys in Dict_Values.keys():
-            if isinstance(Dict_Values[keys], (list, tuple, dict)):  # checking if the dictionary are any of these values
-                v = count_values(Dict_Values[keys])
-                values += v
-            else:
-                values += 1
-
-    elif type(Dict_Values) == list or type(Dict_Values) == tuple:
-        for keys in Dict_Values:
-            if isinstance(keys, (list, tuple, dict)):
-                v = count_values(Dict_Values)
-                values += v
-            else:
-                values += 1
-
-    return values
-
-
-def count_columns():#add to column if the value is not None
+def count_columns():  # add to column if the value is not None
     counter = 0
 
     for player in range(len(sheet.col_values(2))):
@@ -59,67 +37,127 @@ def count_columns():#add to column if the value is not None
 
     return counter
 
-# def return_combined_total_weights(All_Players):
-#
-#     combined_total_weights = 0
-# for i in
-#     length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
 
-
-def create_teams(All_Players):
-
-    new_team = Val_Team()
-    total_rankweight = 0
-    new_team.add_member(total_rankweight)
-    # try:
-    while new_team.__len__() < 6:
-        random_rank = random.choice(list(All_Players))  # gets one of the ranks from Iron-Radiant
-        if random_rank == 'Radiant':
-            pprint("you got radiant slut" + str(random_rank))
-            length_of_rankedlist = len(All_Players[random_rank])
-
+def iterate_dict(dictionary):
+    for key, value in list(dictionary.items()):
+        # Check if value is of dict type
+        if isinstance(value, dict):
+            # If value is dict then iterate over all its values
+            for pair in iterate_dict(value):
+                yield (key, *pair)
         else:
-            random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
-            length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
-
-            while length_of_rankedlist <= 1:
-                if random_rank == 'Radiant':
-                    length_of_rankedlist = len(All_Players[random_rank])
-                    pprint("you got radiant twice slut" + str(random_rank))
-                    break
-                else:
-                    random_rank = random.choice(list(All_Players))
-                    random_rankedtier = random.choice(list(All_Players[random_rank]))  # gets random tier from 1-3
-                    length_of_rankedlist = len(All_Players[random_rank][random_rankedtier])
-
-            random_playerindex = random.randint(1, (length_of_rankedlist - 1))  # helps pick a player from the tiers that is not the numerical value
-            random_rankedplayer = All_Players[random_rank][random_rankedtier][random_playerindex]
-            total_rankweight += All_Players[random_rank][random_rankedtier][0] #get the numerical value of the rank weight given statically
-            new_team.update_member(total_rankweight,0)#update first item in new_team which is the rank weight
-            new_team.add_member(random_rankedplayer.Player_IGN)
-            All_Players[random_rank][random_rankedtier].remove(random_rankedplayer)#removes a person
-
-    return new_team
-    # except AttributeError as e:
-    #     if e.message("'list' object has no attribute 'keys'"):
-    #         if
-    #         else:
-    #         return
+            # If value is not dict type then yield the value
+            yield (key, value)
 
 
-#     if e.message("'list' object has no attribute 'keys'"):
-#         print("HA")
-#     else:
-#         print("bah")
+def remove_empty_ranks():
+    for pair in iterate_dict(All_Players):
+        rank_to_delete = str(pair[0])
+        tier_to_delete = str(pair[1])
+        try:
+            print(str(pair[2][1].Player_IGN))
+
+        except IndexError:
+            if rank_to_delete is not 'Radiant':
+                del All_Players[rank_to_delete][tier_to_delete]
+            else:
+                del All_Players[rank_to_delete]
+
+            if rank_to_delete is not 'Radiant' and len(All_Players[rank_to_delete]) == 0:
+                del All_Players[rank_to_delete]
+
+    return All_Players
 
 
-# try:
-#
-# except AttributeError as e:
-#     if e.message("'list' object has no attribute 'keys'"):
-#         print("HA")
-#     else:
-#         print("bah")
+def highest_possible_ranked_player(All_Players):
+    highest_possible_weight = 0
+    weight_to_compare = 0
+    rank_keys_list = list(All_Players)
+    if 'Radiant' in All_Players:
+        highest_possible_weight = 300
+        rank_key = 'Radiant'
+        return highest_possible_weight, rank_key
+
+    for rank_index in range(len(All_Players.keys())-1,-1,-1):
+        rank_key = rank_keys_list[rank_index] # the key for highest rank
+        rank_tier_keys_list = list(All_Players[rank_key])#list of all the rank tiers in given rank_key
+
+        for rank_tier_index in range(len(All_Players[rank_key])-1, -1,-1):
+            rank_tier_key = rank_tier_keys_list[rank_tier_index] # showing all the keys in rank tier (aka all the tiers in Diamond = 1,2,3)
+
+            if len(All_Players) == 1:
+                highest_rank_key = rank_key
+                highest_rank_tier = rank_tier_key
+                highest_possible_weight = All_Players[rank_key][rank_tier_key][0]
+
+            elif weight_to_compare >= All_Players[rank_key][rank_tier_key][0]:
+                highest_rank_key = temp_rank_key
+                highest_rank_tier = temp_rank_tier_key
+                highest_possible_weight = weight_to_compare
+
+            else:
+                weight_to_compare = All_Players[rank_key][rank_tier_key][0]
+                temp_rank_key = rank_key
+                temp_rank_tier_key = rank_tier_key
+
+
+    return highest_possible_weight, highest_rank_key, highest_rank_tier
+
+
+
+def find_player(All_Players):  # traverse All_Players dictionary and get the highest value
+
+    highest_possible_rank = highest_possible_ranked_player(All_Players)
+    weight = highest_possible_rank[0]
+    length_of_rankedlist = len(All_Players[highest_possible_rank[1]][highest_possible_rank[2]])
+    random_playerindex = random.randint(1, length_of_rankedlist-1)
+    random_ranked_player = All_Players[highest_possible_rank[1]][highest_possible_rank[2]][random_playerindex]
+    All_Players[highest_possible_rank[1]][highest_possible_rank[2]].remove(random_ranked_player)
+    remove_empty_ranks()
+
+    return weight, random_ranked_player.Player_IGN
+
+
+def create_teams(All_Players, All_Teams):
+    i = 1
+    finished_teams = 0
+    total_rank_weight = 0
+    new_teams = {}
+
+    while True:
+        if len(All_Players) != 0:
+            if i == len(All_Teams.keys()) + 1:
+                i -= 1
+                while True:
+                    # if i == len(new_teams.keys()) + 1:# if all the teams have at least one entry
+                    if len(new_teams[i].team_members) != 6:
+                        finished_teams += 1
+                    else:
+                        i = 1
+
+                        if finished_teams == len(new_teams.keys()):
+                            for final_team_key in range(1, len(new_teams.keys()) + 1):
+                                pprint(str(final_team_key) + " hi ")
+                                All_Teams[final_team_key] = new_teams[final_team_key]
+                            return All_Teams
+                        else:
+                            player_info = find_player(All_Players)
+                            new_teams[i].add_weight(player_info[0])
+                            new_teams[i].add_member(player_info[1])
+                            remove_empty_ranks()
+                            i += 1
+
+            else:
+                new_team = Val_Team()
+                new_team.add_member(total_rank_weight)
+                player_info = find_player(All_Players)
+                new_team.add_weight(player_info[0])
+                new_team.add_member(player_info[1])
+                new_teams[i] = new_team
+                remove_empty_ranks()
+                i += 1
+        else:
+            return All_Teams
 
 
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
@@ -140,8 +178,8 @@ All_Players = {
     'Gold': {'1': [100], '2': [110], '3': [120]},
     'Platinum': {'1': [140], '2': [150], '3': [160]},
     'Diamond': {'1': [180], '2': [200], '3': [220]},
-    'Immortal': {'1': [240], '2': [260], '3': [280]}
-    #'Radiant': [300]
+    'Immortal': {'1': [240], '2': [260], '3': [280]},
+    'Radiant': [300]
 }
 
 
@@ -162,20 +200,20 @@ for i in range(1, len(data)):
     elif Rank_Name != '':
         All_Players[Rank_Name].append(Player_Info)
 
-total_possible_teams = math.floor(count_columns()/5)
+total_possible_teams = math.floor(count_columns() / 5)
 All_Team_Numbers = []
 All_Teams = {}
 total_team_members = 0
 
 for i in range(total_possible_teams):
-    All_Team_Numbers.append(i+1)
-    #All_Teams[i + 1] = create_teams(All_Players)
-    #pprint(All_Teams[i+1].team_members)
-
+    All_Team_Numbers.append(i + 1)
 
 All_Teams = dict.fromkeys(All_Team_Numbers)
+empty_rank_list = 0
+remove_empty_ranks()
+create_teams(All_Players, All_Teams)
+All_Teams = create_teams(All_Players, All_Teams)
+for i in range(1, len(All_Teams.keys()) + 1):
+    pprint(All_Teams[i].team_members)
 
-total_team_members += len(All_Teams[i + 1].team_members)
-#pprint(return_combined_total_weights(All_Players))
-#pprint(len(All_Teams.keys()))
 
