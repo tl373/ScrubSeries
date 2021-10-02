@@ -115,49 +115,50 @@ def find_player(All_Players):  # traverse All_Players dictionary and get the hig
     All_Players[highest_possible_rank[1]][highest_possible_rank[2]].remove(random_ranked_player)
     remove_empty_ranks()
 
-    return weight, random_ranked_player.Player_IGN
+    return weight, random_ranked_player.Player_IGN, random_ranked_player.Discord_Name
 
 
-def create_teams(All_Players, All_Teams):
-    i = 1
-    finished_teams = 0
-    total_rank_weight = 0
+def create_teams(All_Players,All_Teams):
+
     new_teams = {}
+    total_rank_weight = 0
+
+    for i in range(1,len(All_Teams.keys())+1):
+        new_team = Val_Team()
+        new_team.add_member(total_rank_weight)
+        player_info = find_player(All_Players)
+        Player_IGN_and_Discord = []
+        Player_IGN_and_Discord.append(player_info[1])
+        Player_IGN_and_Discord.append(player_info[2])
+        new_team.add_weight(player_info[0])
+        new_team.add_member(Player_IGN_and_Discord)
+        new_teams[i] = new_team
+        remove_empty_ranks()
+
+    i = 1
 
     while True:
-        if len(All_Players) != 0:
-            if i == len(All_Teams.keys()) + 1:
-                i -= 1
-                while True:
-                    # if i == len(new_teams.keys()) + 1:# if all the teams have at least one entry
-                    if len(new_teams[i].team_members) != 6:
-                        finished_teams += 1
-                    else:
-                        i = 1
+        if len(All_Players) == 0:
+            for final_key in range(1, len(All_Teams.keys()) + 1):
+                if len(new_teams[final_key].team_members) <= 6:
+                    All_Teams[final_key] = new_teams[final_key]
 
-                        if finished_teams == len(new_teams.keys()):
-                            for final_team_key in range(1, len(new_teams.keys()) + 1):
-                                pprint(str(final_team_key) + " hi ")
-                                All_Teams[final_team_key] = new_teams[final_team_key]
-                            return All_Teams
-                        else:
-                            player_info = find_player(All_Players)
-                            new_teams[i].add_weight(player_info[0])
-                            new_teams[i].add_member(player_info[1])
-                            remove_empty_ranks()
-                            i += 1
-
-            else:
-                new_team = Val_Team()
-                new_team.add_member(total_rank_weight)
-                player_info = find_player(All_Players)
-                new_team.add_weight(player_info[0])
-                new_team.add_member(player_info[1])
-                new_teams[i] = new_team
-                remove_empty_ranks()
-                i += 1
-        else:
+                else:
+                    new_teams[final_key].team_members.pop()
+                    new_teams[final_key].add_weight(player_info[0]*-1)
+                    All_Teams[final_key] = new_teams[final_key]
             return All_Teams
+        elif i == 6:
+            i = 1
+        else:
+            player_info = find_player(All_Players)
+            Player_IGN_and_Discord = []
+            Player_IGN_and_Discord.append(player_info[1])
+            Player_IGN_and_Discord.append(player_info[2])
+            new_teams[i].add_weight(player_info[0])
+            new_teams[i].add_member(Player_IGN_and_Discord)
+            remove_empty_ranks()
+            i += 1
 
 
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
@@ -211,8 +212,8 @@ for i in range(total_possible_teams):
 All_Teams = dict.fromkeys(All_Team_Numbers)
 empty_rank_list = 0
 remove_empty_ranks()
-create_teams(All_Players, All_Teams)
-All_Teams = create_teams(All_Players, All_Teams)
+
+All_Teams = create_teams(All_Players,All_Teams)
 for i in range(1, len(All_Teams.keys()) + 1):
     pprint(All_Teams[i].team_members)
 
