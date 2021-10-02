@@ -3,6 +3,7 @@
 import os
 import discord
 import random
+from SSGoogleData import *
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -41,26 +42,27 @@ async def random_map(ctx,*arg):
     response = random.choice(valorant_maps)
     await ctx.send(ctx.author.mention + " got: " + str(response).title() + "!")
     await ctx.send(file=discord.File(response + '.png'))
-"""
-@bot.command(name='score', help='Enter your score using !score <winning team> <score> (for example score will be 13-11 put in 13-11)')
-async def set_score(ctx,*args):
-    team_names = [
-        'team1',
-        'team2',
-        'team3'
-]
 
-    for team in team_names:
-        if args[0] == team:
+All_Teams = print_teams_to_Discord()
 
-"""
+@bot.command(name='myTeam', help='shows what team you are on')
+async def myTeam(ctx):
+    my_team_list = []
+    for i in range(1, len(All_Teams.keys()) + 1):
+        length_of_team = 0
+        while length_of_team != len(All_Teams[i].team_members):
+            if str(ctx.message.author) == All_Teams[i].team_members[length_of_team][1]:
+                for player_ign in range(len(All_Teams[i].team_members)):
+                    my_team_list.append(All_Teams[i].team_members[player_ign][0])
+
+                await ctx.send(ctx.author.mention + " is a part of team " + str(i) + " which has the members "
+                               + str(my_team_list))
+                return
+            else:
+                length_of_team += 1
+
+    await ctx.send(ctx.author.mention + " is a part of team is not a part of a team")
 
 
-"""@bot.command(name='showTeam', help='shows what team you are on')
-async def show_Team(ctx):
-    
-    await ctx.send(ctx.author.mention + " got: " + response + "!")
-    
-"""
 bot.run(TOKEN)
 

@@ -142,6 +142,7 @@ def create_teams(All_Players,All_Teams):
             for final_key in range(1, len(All_Teams.keys()) + 1):
                 if len(new_teams[final_key].team_members) <= 6:
                     All_Teams[final_key] = new_teams[final_key]
+                    #pprint(All_Teams[final_key])
 
                 else:
                     new_teams[final_key].team_members.pop()
@@ -184,37 +185,46 @@ All_Players = {
 }
 
 
-for i in range(1, len(data)):
+def print_teams_to_Discord():
+    for i in range(1, len(data)):
+        try:
+            Player_Info = Val_Player(data[i][1], data[i][2], data[i][3])
+            Rank_Name, Rank_Number = data[i][3].split()
 
-    try:
-        Player_Info = Val_Player(data[i][1], data[i][2], data[i][3])
-        Rank_Name, Rank_Number = data[i][3].split()
+        except ValueError:  # when its missing Rank_number aka Radiant
+            Rank_Name = data[i][3]
+            Player_Info = Val_Player(data[i][1], data[i][2], Rank_Name)
+            Rank_Number = None
 
-    except ValueError:  # when its missing Rank_number aka Radiant
-        Rank_Name = data[i][3]
-        Player_Info = Val_Player(data[i][1], data[i][2], Rank_Name)
-        Rank_Number = None
+        if Rank_Number is not None:
+            All_Players[Rank_Name][Rank_Number].append(Player_Info)
 
-    if Rank_Number is not None:
-        All_Players[Rank_Name][Rank_Number].append(Player_Info)
+        elif Rank_Name != '':
+            All_Players[Rank_Name].append(Player_Info)
 
-    elif Rank_Name != '':
-        All_Players[Rank_Name].append(Player_Info)
+    total_possible_teams = math.floor(count_columns() / 5)
+    All_Team_Numbers = []
+    All_Teams = {}
 
-total_possible_teams = math.floor(count_columns() / 5)
-All_Team_Numbers = []
-All_Teams = {}
-total_team_members = 0
+    for i in range(total_possible_teams):
+        All_Team_Numbers.append(i + 1)
 
-for i in range(total_possible_teams):
-    All_Team_Numbers.append(i + 1)
+    All_Teams = dict.fromkeys(All_Team_Numbers)
+    remove_empty_ranks()
 
-All_Teams = dict.fromkeys(All_Team_Numbers)
-empty_rank_list = 0
-remove_empty_ranks()
+    All_Teams = create_teams(All_Players,All_Teams)
+    for i in range(1, len(All_Teams.keys()) + 1):
+        if isinstance(All_Teams[i].team_members[0], int):
+            All_Teams[i].team_members.pop(0)
 
-All_Teams = create_teams(All_Players,All_Teams)
-for i in range(1, len(All_Teams.keys()) + 1):
-    pprint(All_Teams[i].team_members)
 
+    return All_Teams
+
+# All_Teams = print_teams_to_Discord()
+#
+# for i in range(1,len(All_Teams.keys())+1):
+#     if isinstance(All_Teams[i].team_members[0], int):
+#         All_Teams[i].team_members.pop(0)
+#
+#     pprint(All_Teams[i].team_members)
 
