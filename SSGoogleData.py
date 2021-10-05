@@ -80,6 +80,7 @@ def highest_possible_ranked_player(All_Players):
 
     for rank_index in range(len(All_Players.keys())-1,-1,-1):
         rank_key = rank_keys_list[rank_index] # the key for highest rank
+
         rank_tier_keys_list = list(All_Players[rank_key])#list of all the rank tiers in given rank_key
 
         for rank_tier_index in range(len(All_Players[rank_key])-1, -1,-1):
@@ -112,10 +113,11 @@ def find_player(All_Players):  # traverse All_Players dictionary and get the hig
     length_of_rankedlist = len(All_Players[highest_possible_rank[1]][highest_possible_rank[2]])
     random_playerindex = random.randint(1, length_of_rankedlist-1)
     random_ranked_player = All_Players[highest_possible_rank[1]][highest_possible_rank[2]][random_playerindex]
+    rank_of_random_player = ''.join([highest_possible_rank[1]] + [highest_possible_rank[2]])
     All_Players[highest_possible_rank[1]][highest_possible_rank[2]].remove(random_ranked_player)
     remove_empty_ranks()
 
-    return weight, random_ranked_player.Player_IGN, random_ranked_player.Discord_Name
+    return weight, random_ranked_player.Player_IGN, random_ranked_player.Discord_Name, rank_of_random_player
 
 
 def create_teams(All_Players,All_Teams):
@@ -127,11 +129,12 @@ def create_teams(All_Players,All_Teams):
         new_team = Val_Team()
         new_team.add_member(total_rank_weight)
         player_info = find_player(All_Players)
-        Player_IGN_and_Discord = []
-        Player_IGN_and_Discord.append(player_info[1])
-        Player_IGN_and_Discord.append(player_info[2])
+        Player_IGN_Rank_and_Discord = []
+        Player_IGN_Rank_and_Discord.append(player_info[1])
+        Player_IGN_Rank_and_Discord.append(player_info[2])
+        Player_IGN_Rank_and_Discord.append(player_info[3])
         new_team.add_weight(player_info[0])
-        new_team.add_member(Player_IGN_and_Discord)
+        new_team.add_member(Player_IGN_Rank_and_Discord)
         new_teams[i] = new_team
         remove_empty_ranks()
 
@@ -140,24 +143,25 @@ def create_teams(All_Players,All_Teams):
     while True:
         if len(All_Players) == 0:
             for final_key in range(1, len(All_Teams.keys()) + 1):
+                pprint(All_Teams.keys())
                 if len(new_teams[final_key].team_members) <= 6:
                     All_Teams[final_key] = new_teams[final_key]
-                    #pprint(All_Teams[final_key])
 
                 else:
                     new_teams[final_key].team_members.pop()
                     new_teams[final_key].add_weight(player_info[0]*-1)
                     All_Teams[final_key] = new_teams[final_key]
             return All_Teams
-        elif i == 6:
+        elif i > len(All_Teams.keys()):
             i = 1
         else:
             player_info = find_player(All_Players)
-            Player_IGN_and_Discord = []
-            Player_IGN_and_Discord.append(player_info[1])
-            Player_IGN_and_Discord.append(player_info[2])
+            Player_IGN_Rank_and_Discord = []
+            Player_IGN_Rank_and_Discord.append(player_info[1])
+            Player_IGN_Rank_and_Discord.append(player_info[2])
+            Player_IGN_Rank_and_Discord.append(player_info[3])
             new_teams[i].add_weight(player_info[0])
-            new_teams[i].add_member(Player_IGN_and_Discord)
+            new_teams[i].add_member(Player_IGN_Rank_and_Discord)
             remove_empty_ranks()
             i += 1
 
@@ -169,7 +173,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("token.json", scope)
 
 client = gspread.authorize(creds)
 
-sheet = client.open("Scrub Series IV (Responses)").sheet1  # Open the spreadsheet
+sheet = client.open("Demo Team Maker (Responses)").sheet1  # Open the spreadsheet
 
 data = sheet.get_all_values()  # Get a list of all records
 
@@ -204,27 +208,19 @@ def print_teams_to_Discord():
 
     total_possible_teams = math.floor(count_columns() / 5)
     All_Team_Numbers = []
-    All_Teams = {}
 
     for i in range(total_possible_teams):
         All_Team_Numbers.append(i + 1)
 
     All_Teams = dict.fromkeys(All_Team_Numbers)
     remove_empty_ranks()
-
     All_Teams = create_teams(All_Players,All_Teams)
     for i in range(1, len(All_Teams.keys()) + 1):
-        if isinstance(All_Teams[i].team_members[0], int):
+        if len(All_Teams[i].team_members) != 6:
+            All_Teams[i].team_members = None
+        elif isinstance(All_Teams[i].team_members[0], int):
             All_Teams[i].team_members.pop(0)
-
 
     return All_Teams
 
-# All_Teams = print_teams_to_Discord()
-#
-# for i in range(1,len(All_Teams.keys())+1):
-#     if isinstance(All_Teams[i].team_members[0], int):
-#         All_Teams[i].team_members.pop(0)
-#
-#     pprint(All_Teams[i].team_members)
 
