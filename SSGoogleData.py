@@ -55,9 +55,11 @@ def remove_empty_ranks():
         rank_to_delete = str(pair[0])
         tier_to_delete = str(pair[1])
         try:
-            print(str(pair[2][1].Player_IGN))
+            if pair[2][1].Player_IGN:
+                pass
 
         except IndexError:
+
             if rank_to_delete is not 'Radiant':
                 del All_Players[rank_to_delete][tier_to_delete]
             else:
@@ -130,9 +132,10 @@ def create_teams(All_Players,All_Teams):
         new_team.add_member(total_rank_weight)
         player_info = find_player(All_Players)
         Player_IGN_Rank_and_Discord = []
-        Player_IGN_Rank_and_Discord.append(player_info[1])
-        Player_IGN_Rank_and_Discord.append(player_info[2])
-        Player_IGN_Rank_and_Discord.append(player_info[3])
+        Player_IGN_Rank_and_Discord.append(player_info[1])#player IGN
+        Player_IGN_Rank_and_Discord.append(player_info[2])#player discord
+        Player_IGN_Rank_and_Discord.append(player_info[3])#rank of player for emoji
+
         new_team.add_weight(player_info[0])
         new_team.add_member(Player_IGN_Rank_and_Discord)
         new_teams[i] = new_team
@@ -143,7 +146,6 @@ def create_teams(All_Players,All_Teams):
     while True:
         if len(All_Players) == 0:
             for final_key in range(1, len(All_Teams.keys()) + 1):
-                pprint(All_Teams.keys())
                 if len(new_teams[final_key].team_members) <= 6:
                     All_Teams[final_key] = new_teams[final_key]
 

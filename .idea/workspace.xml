@@ -19,11 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0fd902b-8f30-494f-82de-ff0b8ddec972" name="Default Changelist" comment="Update to balance teams">
+    <list default="true" id="f0fd902b-8f30-494f-82de-ff0b8ddec972" name="Default Changelist" comment="Finishing everythhing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SSGoogleData.py" beforeDir="false" afterPath="$PROJECT_DIR$/SSGoogleData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +229,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633152389331</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Finishing everythhing">
+      <created>1633436872530</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1633436872530</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -253,6 +258,7 @@
     <MESSAGE value="Updated create_teams" />
     <MESSAGE value="Have to balance teams" />
     <MESSAGE value="Update to balance teams" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update to balance teams" />
+    <MESSAGE value="Finishing everythhing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finishing everythhing" />
   </component>
 </project>
