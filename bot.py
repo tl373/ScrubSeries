@@ -3,12 +3,14 @@
 import os
 import discord
 import random
+import redis
 from SSGoogleData import *
 from dotenv import load_dotenv
 from discord.ext import commands
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+redis_server = redis.Redis()
+TOKEN = str(redis_server.get('DISCORD_TOKEN').decode('utf-8'))
 client = discord.Client()
 
 bot = commands.Bot(command_prefix='!')
