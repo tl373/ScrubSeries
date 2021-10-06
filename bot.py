@@ -18,12 +18,12 @@ bot = commands.Bot(command_prefix='!')
 @bot.command(name='randommap', help='Gives a random map name. To ban specific maps add ban after !randommap')
 async def random_map(ctx,*arg):
     valorant_maps = [
-        'haven',
-        'ascent',
-        'icebox',
-        'bind',
-        'breeze',
-        'split'
+        'Haven',
+        'Ascent',
+        'Icebox',
+        'Bind',
+        'Breeze',
+        'Split'
     ]
     # if ctx.author.bot == True:
     #     await ctx.send("test")
